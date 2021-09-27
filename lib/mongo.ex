@@ -131,7 +131,12 @@ defmodule Mongo do
   end
 
   def child_spec(opts, child_opts \\ []) do
-    Supervisor.Spec.worker(Mongo, [opts], child_opts)
+    child_opts
+    |> Map.new()
+    |> Map.merge(%{
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, [opts]}
+    })
   end
 
   @doc """
@@ -344,7 +349,7 @@ defmodule Mongo do
   @doc """
   Similar to `count_documents/4` but unwraps the result and raises on error.
   """
-  @spec count_documents!(GenServer.server, collection, BSON.document, Keyword.t) :: result!(non_neg_integer)
+  # @spec count_documents!(GenServer.server, collection, BSON.document, Keyword.t) :: result!(non_neg_integer)
   def count_documents!(topology_pid, coll, filter, opts \\ []) do
     bangify(count_documents(topology_pid, coll, filter, opts))
   end
@@ -910,15 +915,6 @@ defmodule Mongo do
 
   defp cursor(conn, coll, query, select, opts) do
     %Mongo.Cursor{
-      conn: conn,
-      coll: coll,
-      query: query,
-      select: select,
-      opts: opts}
-  end
-
-  defp singly_cursor(conn, coll, query, select, opts) do
-    %Mongo.SinglyCursor{
       conn: conn,
       coll: coll,
       query: query,

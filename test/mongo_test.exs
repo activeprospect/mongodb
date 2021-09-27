@@ -29,7 +29,6 @@ defmodule Mongo.Test do
   end
 
   test "show_collections", c do
-
     coll_1 = unique_name() <> "_1"
     coll_2 = unique_name() <> "_2"
 
@@ -38,20 +37,20 @@ defmodule Mongo.Test do
     assert {:ok, _} = Mongo.insert_one(c.pid, coll_2, %{foo: 3})
     assert {:ok, _} = Mongo.insert_one(c.pid, coll_2, %{foo: 4})
 
-    cmd      = [createIndexes: coll_1, indexes: [[key: [foo: 1], name: "not-a-collection"]]]
+    cmd = [createIndexes: coll_1, indexes: [[key: [foo: 1], name: "not-a-collection"]]]
     assert {:ok, _} = Mongo.command(c.pid, cmd)
 
-    cmd      = [createIndexes: coll_2, indexes: [[key: [foo: 1, bar: 1], name: "not-a-collection"]]]
+    cmd = [createIndexes: coll_2, indexes: [[key: [foo: 1, bar: 1], name: "not-a-collection"]]]
     assert {:ok, _} = Mongo.command(c.pid, cmd)
 
-    colls = c.pid
-    |> Mongo.show_collections()
-    |> Enum.to_list()
+    colls =
+      c.pid
+      |> Mongo.show_collections()
+      |> Enum.to_list()
 
     assert Enum.member?(colls, coll_1)
     assert Enum.member?(colls, coll_2)
     assert not Enum.member?(colls, "not-a-collection")
-
   end
 
   test "list_indexes", c do

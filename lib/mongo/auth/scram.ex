@@ -2,7 +2,6 @@ defmodule Mongo.Auth.SCRAM do
   @moduledoc false
   import Mongo.BinaryUtils
   import Mongo.Protocol.Utils
-  import Bitwise
 
   def auth({username, password}, s) do
     # TODO: Wrap and log error
@@ -89,7 +88,7 @@ defmodule Mongo.Auth.SCRAM do
   defp xor_keys("", "", result),
     do: result
   defp xor_keys(<<fa, ra::binary>>, <<fb, rb::binary>>, result),
-    do: xor_keys(ra, rb, <<result::binary, fa ^^^ fb>>)
+    do: xor_keys(ra, rb, <<result::binary, Bitwise.bxor(fa, fb)>>)
 
 
   defp nonce do
