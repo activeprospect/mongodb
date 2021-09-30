@@ -311,4 +311,13 @@ defmodule Mongo.Protocol do
 
   defp getopts(:gen_tcp, sock, opts), do: :inet.getopts(sock, opts)
   defp getopts(:ssl, sock, opts), do: :ssl.getopts(sock, opts)
+
+  def handle_begin(_, state), do:  {:ok, :not_implemented, state}
+  def handle_close(_, _, state), do:  {:ok, :not_implemented, state}
+  def handle_commit(_, state), do:  {:ok, :not_implemented, state}
+  def handle_deallocate(_, _, _, state), do:  {:ok, :not_implemented, state}
+  def handle_declare(_, _, _, state), do:  {:ok, nil, nil, state}
+  def handle_fetch(_, _, _, state), do:  {:cont, :not_implemented, state}
+  def handle_prepare(_, _, state), do:  {:ok, nil, state}
+  def handle_rollback(_, state), do:  {:ok, :not_implemented, state}
 end
